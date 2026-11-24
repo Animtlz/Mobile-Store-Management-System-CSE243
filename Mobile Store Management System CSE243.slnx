@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Mobile Store Management System CSE243/Mobile Store Management System CSE243.vcxproj" />
+</Solution>
