@@ -15,24 +15,38 @@ void LinkedList::insert(int val)
         Head->next = NewNode;
     }
 }
+void LinkedList::insertAtBeginnig(int val)
+{
+    {
+        Node* newnode= new Node();
+        newnode->data = val;
+
+        if (Head== NULL) {
+            Head = newnode;
+        }
+        else {
+            newnode->next = Head;
+            Head = newnode;
+        }
+    }
+}
 bool LinkedList::remove(int val) {
 
     bool found = 0;
-    if (Head->data == val) {
-        Head = Head->next;
+    Node* current = Head;
+    if (Head == NULL) {
+        cout << "empty";
         return 0;
     }
-    Node* current = Head;
-    while (current == NULL) {
-        if (current->next->data == val) {
-            current->next = current->next->next;
+    while (current != NULL) {
+        if (current->data == val) {
             cout << "removed successfully";
-            found = 1;
-            break;
+            delete current;
+            return 1;
         }
         current = current->next;
     }
-    return found;
+    return 0;
     
 
 }
@@ -59,6 +73,10 @@ int LinkedList::search(int val)
         }
         current = current->next;
         i++;
+    }
+    if (found == -1)
+    {
+        cout << "not found";
     }
     return found;
 }
