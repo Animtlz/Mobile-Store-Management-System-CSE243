@@ -1,20 +1,36 @@
 #pragma once
 #ifndef SLList
 #define SLList
+template <typename T>
 class LinkedList {
+	
 	class Node {
+
 	public:
-		int data;// add needed data right here
-		Node* next;
+		T data;// add needed data right here
+		Node* next=NULL;
 		Node();
 		~Node();
 	};
-	Node* Head;
-	void insert(int data); //according to data type
-	void insertAtBeginnig(int data);
-	bool remove(int val);  //according to data type
-	int search(int data); //according to type
-	void displayer();
+	
+	private:
+		int length = 0;
+	public:
+		Node* Head;
+		Node* tail;	
+		LinkedList();
+		~LinkedList();
+		void insertEnd( T& data); //according to data type
+		void insertStart(T& data);
+		bool deleteStart();
+		bool deleteEnd();
+		bool deleteAt(T& val);  //according to data type
+		int  search(T& data); //according to type
+		void displayAll();
+		int getLength();
+		bool isEmpty();
+		void clear();
+		
 
 };
 #endif SLList

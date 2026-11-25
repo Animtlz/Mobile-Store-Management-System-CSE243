@@ -1,65 +1,165 @@
 #include "Linked_List.h"
 #include<iostream>
 using namespace std;
-LinkedList::Node::Node() {}
-LinkedList::Node::~Node() { delete this; }
-void LinkedList::insert(int val)
+
+template<typename T>
+LinkedList<T>::Node::Node() {}
+
+template<typename T>
+LinkedList<T>::Node::~Node() { delete this; }
+
+template<typename T>
+LinkedList<T>::LinkedList() {}
+template<typename T>
+LinkedList<T>::~LinkedList()
+{
+    Node* current = Head;
+    while (current != NULL)
+    {
+        Node* nextNode = current->next;
+        delete current;
+        current = nextNode;
+    }
+    Head = tail = NULL;
+    length = 0;
+    delete this;
+}
+
+template<typename T>
+void LinkedList<T>::insertEnd( T& val)
 {
     Node* NewNode = new Node();
     NewNode->data = val;
 
     if (Head == NULL) {
-        Head = NewNode;
+        Head = tail = NewNode;
     }
     else {
-        Head->next = NewNode;
+        tail->next = NewNode;
+        tail = NewNode;
     }
+    length++;
 }
-void LinkedList::insertAtBeginnig(int val)
+
+template<typename T>
+void LinkedList<T>::insertStart (T& val)
 {
-    {
-        Node* newnode= new Node();
-        newnode->data = val;
+    Node* newnode = new Node();
+    newnode->data = val;
 
-        if (Head== NULL) {
-            Head = newnode;
-        }
-        else {
-            newnode->next = Head;
-            Head = newnode;
-        }
+    if (Head == NULL) {
+        Head =tail= newnode;
     }
+    else {
+        newnode->next = Head;
+        Head = newnode;
+    }
+    length++;
 }
-bool LinkedList::remove(int val) {
 
-    bool found = 0;
+template <typename T>
+bool LinkedList<T>::deleteStart() {
+    if (Head == NULL) {
+        cout << "empty list";
+        return 0;
+    }
+
+    Node* temp = Head;
+
+    if (Head == tail) {       
+        Head = tail = NULL;
+    }
+    else {
+        Head = Head->next;     
+    }
+
+    delete temp;              
+    length--;
+    return 1;
+}
+
+template <typename T>
+bool LinkedList<T>:: deleteEnd() {
     Node* current = Head;
+    if (Head == NULL)
+    {
+        cout << "empty list";
+        return 0;
+    }
+    if (Head == tail)
+    {
+        delete Head;
+        Head = tail = NULL;
+        length--;
+        return 1;
+    }
+    while (current->next->next != NULL)
+    {
+        current = current->next;
+    }
+    delete tail;
+    tail = current;
+    tail->next = NULL;
+    length--;
+    return 1;
+}
+
+template<typename T>
+bool LinkedList<T>::deleteAt(T& val) {
+
     if (Head == NULL) {
         cout << "empty";
         return 0;
     }
+    if (Head->data == val) {
+        Node* temp = Head;
+        if (Head == tail) {     
+            Head = tail = NULL;
+        }
+        else {
+            Head = Head->next;
+        }
+        delete temp;
+        length--;
+        cout << "removed successfully";
+        return 1;
+    }
+
+    Node* prev = Head;
+    Node* current = Head->next;
+
     while (current != NULL) {
         if (current->data == val) {
-            cout << "removed successfully";
+            prev->next = current->next; 
+            if (current == tail) {       
+                tail = prev;
+            }
             delete current;
+            length--;
+            cout << "removed successfully";
             return 1;
         }
+        prev = current;
         current = current->next;
     }
-    return 0;
-    
-
+    return 0; 
 }
-void LinkedList::displayer() {
-	Node* H = Head;
-	while (H != nullptr)
-	{
-		cout << H->data << endl;
-		H = H->next;
-	}
 
+template <typename T>
+void LinkedList<T>::displayAll()
+{
+    Node* H = Head;
+    while (H != NULL)
+    {
+        cout << H->val << " ";
+        H = H->adrs;
+
+    }
+    cout << "\n";
 }
-int LinkedList::search(int val)
+
+template<typename T>
+int LinkedList<T>::search(T& val)
 {
     if (Head == NULL) return -1;
 
@@ -80,3 +180,27 @@ int LinkedList::search(int val)
     }
     return found;
 }
+template <typename T>
+int LinkedList<T>::getLength()
+{
+    return length;
+}
+template <typename T>
+bool LinkedList<T>::isEmpty()
+{
+    return Head == NULL;
+}
+template <typename T>
+void LinkedList<T>::clear()
+{
+    Node* current = Head;
+    while (current != NULL)
+    {
+        Node* nextNode = current->next;
+        delete current;
+        current = nextNode;
+    }
+    Head = tail = NULL;
+    length = 0;
+}
+
