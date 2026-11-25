@@ -141,6 +141,9 @@
   <ItemGroup>
     <ClCompile Include="Mobile Store Management System CSE243.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Linked_List.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
