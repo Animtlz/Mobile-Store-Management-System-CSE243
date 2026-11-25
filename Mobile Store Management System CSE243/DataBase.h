@@ -8,6 +8,7 @@ class DataBase {
 	LinkedList<Admin> admins;
 	LinkedList<Mobile> mobiles;
 public:
+	static User* CurrentUser = nullptr;
 	LinkedList<Customer>& getCustomers();
 	LinkedList<Admin>& getAdmins();
 	LinkedList<Mobile>& getMobiles();
