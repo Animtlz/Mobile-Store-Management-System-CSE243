@@ -15,7 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Mobile Store Management System CSE243.cpp">
+    <ClCompile Include="DriverFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LLimplemetation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

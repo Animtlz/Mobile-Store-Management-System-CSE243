@@ -139,7 +139,8 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Mobile Store Management System CSE243.cpp" />
+    <ClCompile Include="DriverFile.cpp" />
+    <ClCompile Include="LLimplemetation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Linked_List.h" />
