@@ -142,10 +142,12 @@
     <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="DriverFile.cpp" />
     <ClCompile Include="LLimplemetation.cpp" />
+    <ClCompile Include="Mobile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataBase.h" />
     <ClInclude Include="Linked_List.h" />
+    <ClInclude Include="Mobile.h" />
     <ClInclude Include="Orders.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
