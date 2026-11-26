@@ -1,6 +1,5 @@
 #pragma once
 #ifndef Orders
-#define Orders
 #include<iostream>
 #include<string>
 #include "Linked_List.h"
@@ -8,12 +7,13 @@
 using namespace std;
 
 
-class orders {
+class Orders {
+private:
 	string orderId;
 	LinkedList<Mobile> mobiles;
 	double cost;
 	int customerId;
-	orders() {}
+public:
 	string getOrderId();
 	void setOrderId(string Id);
 	LinkedList<Mobile>& getMobiles();

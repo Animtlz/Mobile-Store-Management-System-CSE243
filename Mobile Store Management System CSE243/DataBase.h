@@ -1,6 +1,7 @@
 #pragma once
 #include "Linked_List.h"
-#include<iostream>
+#include <iostream>
+#include "Mobile.h"
 using namespace std;
 class DataBase {
 	

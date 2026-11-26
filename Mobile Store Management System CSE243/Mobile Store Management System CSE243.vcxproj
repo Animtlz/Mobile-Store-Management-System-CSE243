@@ -143,6 +143,7 @@
     <ClCompile Include="DriverFile.cpp" />
     <ClCompile Include="LLimplemetation.cpp" />
     <ClCompile Include="Mobile.cpp" />
+    <ClCompile Include="Orders.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataBase.h" />
