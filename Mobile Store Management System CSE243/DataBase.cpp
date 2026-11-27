@@ -1,220 +1,113 @@
 #pragma once
 #include <iostream>
-#include <fstream>
 #include <string>
-#include "Linked_List.cpp"
+#include <fstream>
+#include "LinkedList.cpp"
+#include "User.cpp"
 #include "Mobile.cpp"
+#include "Order.cpp"
 using namespace std;
-class DataBase
+
+class Database
 {
-	const string ADMIN_PREFIX = "A11";
-	const string CUSTOMER_PREFIX = "C11";
-	const string MOBILE_PREFIX = "P11";
-
-	LinkedList<Customer> customers;
-	LinkedList<Admin> admins;
-	LinkedList<Mobile> mobiles;
-
 	public:
-	static User *CurrentUser = nullptr;
-	LinkedList<Customer> &getCustomers() { return this->customers; }
-	LinkedList<Admin> &getAdmins() { return this->admins; }
-	LinkedList<Mobile> &getMobiles() { return this->mobiles; }
+    LinkedList<User> users;
+	LinkedList<Mobile> mobiles;
+    LinkedList<Order> orders;
 
-	void saveData()
-	{
-		ofstream saveCustomers("customers.txt");
-		auto search = this->customers.Head;
-		if (saveCustomers.is_open())
-		{
-			while (search)
-			{
-				saveCustomers << search->data->save();
-				search = search->next;
-			}
-		}
-		saveCustomers.close();
+    double getPricebyId(const string &id)
+    {
+        for (auto n = mobiles.Head; n; n = n->next)
+            if (n->data.getMobileId() == id)
+                return n->data.getMobilePrice();
+        return 0.0;
+    }
 
-		ofstream saveAdmins("admins.txt");
-		search = this->admins.Head;
-		if (saveAdmins.is_open())
-		{
-			while (search)
-			{
-				saveAdmins << search->data->save();
-				search = search->next;
-			}
-		}
-		saveAdmins.close();
+    Mobile* getMobileById(const string &id)
+    {
+        for (auto n = mobiles.Head; n; n = n->next)
+            if (n->data.getMobileId() == id)
+                return &n->data;
+        return nullptr;
+    }
 
-		ofstream saveMobiles("mobiles.txt");
-		search = this->mobiles.Head;
-		if (saveMobiles.is_open())
-		{
-			while (search)
-			{
-				saveMobiles << search->data->save();
-				search = search->next;
-			}
-		}
-		saveMobiles.close();
-	}
-	void loadData()
-	{
-		string line;
-		ifstream loadCustomers("customers.txt");
-		if (loadCustomers.is_open())
-		{
-			while (getline(loadCustomers, line))
-			{
-				customers.insertEnd(Customer.load(line));
-			}
-			loadCustomers.close();
-		}
+    static bool blank(const string &s)
+    {
+        return s.find_first_not_of(" \t\r\n") == string::npos;
+    }
 
-		ifstream loadAdmins("admins.txt");
-		if (loadAdmins.is_open())
-		{
-			while (getline(loadAdmins, line))
-			{
-				admins.insertEnd(Admin.load(line));
-			}
-			loadAdmins.close();
-		}
+    void saveData()
+    {
+        ofstream saveUsers("users.txt");
+        for (auto n = users.Head; n; n = n->next)
+            saveUsers << n->data.save();
 
-		ifstream loadMobiles("mobiles.txt");
-		if (loadMobiles.is_open())
-		{
-			while (getline(loadMobiles, line))
-			{
-				mobiles.insertEnd(Mobile.load(line));
-			}
-			loadMobiles.close();
-		}
-	}
+        ofstream saveMobiles("mobiles.txt");
+        for (auto n = mobiles.Head; n; n = n->next)
+            saveMobiles << n->data.save();
 
-	User searchUser(string email, string password, bool isAdmin)
-	{
-		auto search;
-		if (isAdmin)
-		{
-			search = this->admins.Head;
-		}
-		else
-		{
-			search = this->customers.Head;
-		}
+        ofstream saveOrders("orders.txt");
+        for (auto n = orders.Head; n; n = n->next)
+            saveOrders << n->data.save();
+    }
 
-		while (search)
-		{
-			if (search->data.getEmail() == email && search->data.getPassword() == password)
-			{
-				return search->data;
-			}
-			search = search->next;
-		}
-		return null;
-	}
-	bool userExists(string email)
-	{
-		auto search = this->admins.Head;
-		while (search)
-		{
-			if (search->data.getEmail() == email)
-			{
-				return true;
-			}
-			search = search->next;
-		}
-		search = this->customers.Head;
-		while (search)
-		{
-			if (search->data.getEmail() == email)
-			{
-				return true;
-			}
-			search = search->next;
-		}
-		return false;
-	}
+    void loadData()
+    {
+        users.clear();
+        mobiles.clear();
+        orders.clear();
+        string line;
+        int maxUser = 0, maxMobile = 0, maxOrder = 0;
 
-	int getLastID(int type){
-		if type == 1{
-			if (this->admins.isEmpty()){
-				return 0;
-			}
-			else{
-				auto search = this->admins.tail;
-				string lastID = search->data.getID();
-				int lastNum = stoi(lastID.substr(3));
-				return lastNum;
-			}
-		}
-		else if (type == 2){
-			if (this->customers.isEmpty()){
-				return 0;
-			}
-			else{
-				auto search = this->customers.tail;
-				string lastID = search->data.getID();
-				int lastNum = stoi(lastID.substr(3));
-				return lastNum;
-			}
-		}
-		else if (type == 3){
-			if (this->mobiles.isEmpty()){
-				return 0;
-			}
-			else{
-				auto search = this->mobiles.tail;
-				string lastID = search->data.getMobileId();
-				int lastNum = stoi(lastID.substr(3));
-				return lastNum;
-			}
-		}
-	}
-	
-	Mobile getMobileById(string id)
-	{
-		Mobile foundMobile = null;
-		auto search = this->mobiles.Head;
-		while (search)
-		{
-			if (search->data.getMobileId() == id)
-			{
-				foundMobile = search->data;
-				break;
-			}
-			search = search->next;
-		}
-		return *foundMobiles;
-	}
-	LinkedList<Mobile> searchMobileByModel(string model)
-	{
-		LinkedList<Mobile> *foundMobiles = new LinkedList<Mobile>();
-		auto search = this->mobiles.Head;
-		while (search)
-		{
-			if (search->data.getModel() == model)
-			{
-				foundMobiles->insertEnd(search->data);
-			}
-			search = search->next;
-		}
-		return *foundMobiles;
-	}
-	LinkedList<Mobile> searchMobileByStorage(int storage)
-	{
-		LinkedList<Mobile> *foundMobiles = new LinkedList<Mobile>();
-		auto search = this->mobiles.Head;
-		while (search)
-		{
-			if (search->data.getStorage() == storage)
-			{
-				foundMobiles->insertEnd(search->data);
-			}
-			search = search->next;
-		}
-		return *foundMobiles;
-	}
+        ifstream loadUsers("users.txt");
+        while (getline(loadUsers, line))
+        {
+            if (blank(line)) continue;
+            try
+            {
+                users.insertEnd(User::load(line));
+                maxUser = max(maxUser, stoi(users.tail->data.getId().substr(3)));
+            }
+            catch (...) { cout << "Warning: skipped a corrupted line in users.txt\n"; }
+        }
+
+        ifstream loadMobiles("mobiles.txt");
+        while (getline(loadMobiles, line))
+        {
+            if (blank(line)) continue;
+            try
+            {
+                mobiles.insertEnd(Mobile::load(line));
+                maxMobile = max(maxMobile, stoi(mobiles.tail->data.getMobileId().substr(3)));
+            }
+            catch (...) { cout << "Warning: skipped a corrupted line in mobiles.txt\n"; }
+        }
+
+        ifstream loadOrders("orders.txt");
+        while (getline(loadOrders, line))
+        {
+            if (blank(line)) continue;
+            try
+            {
+                orders.insertEnd(Order::load(line));
+                maxOrder = max(maxOrder, stoi(orders.tail->data.getOrderId().substr(3)));
+            }
+            catch (...) { cout << "Warning: skipped a corrupted line in orders.txt\n"; }
+        }
+
+        // Loading builds objects through the constructors, which bump the ID
+        // counters; reset them so new IDs continue after the highest saved one.
+        Globals::latestUserID   = "C11" + to_string(maxUser);
+        Globals::latestMobileID = "P11" + to_string(maxMobile);
+        Globals::latestOrderID  = "O11" + to_string(maxOrder);
+    }
+
+    Order* getOrderById(const string &id)
+    {
+        for (auto n = orders.Head; n; n = n->next)
+            if (n->data.getOrderId() == id)
+                return &n->data;
+        return nullptr;
+    }
+    
 };

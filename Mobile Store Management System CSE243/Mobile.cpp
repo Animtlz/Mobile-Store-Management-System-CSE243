@@ -1,85 +1,84 @@
 #pragma once
 #include <iostream>
 #include <string>
-#include <sstream>
+#include <iomanip>
+#include "Globals.cpp"
 using namespace std;
 
-class Mobile {
+class Mobile
+{
 private:
-	string mobileId;
-	string mobileName;
-	string model;
-	double mobilePrice;
-	int warrantyPeriod;   
-	int storage;          
-	int stock;            
+    string mobileId;
+    string mobileName;
+    string model;
+    double mobilePrice = 0.0;
+    int warrantyPeriod = 0;
+    int storage = 0;
+    int stock = 0;
+    bool isAvailable = true;
 
 public:
-	Mobile() {
-		setMobilePrice(0.0);
-		setWarrantyPeriod(0);
-		setStorage(0);
-		setStock(0);
-	}
-	Mobile(string mobileName, string model, double mobilePrice,
-		int warrantyPeriod, int storage, int stock) {
-		setMobileId("P11" + to_string(Database.getLastID(1) + 1));
-		setMobileName(mobileName);
-		setModel(model);
-		setMobilePrice(mobilePrice);
-		setWarrantyPeriod(warrantyPeriod);
-		setStorage(storage);
-		setStock(stock);
-	}
+    Mobile(string mobileName, string model, double mobilePrice, int warrantyPeriod, int storage, int stock)
+    {
+        this->mobileName = mobileName;
+        this->model = model;
+        this->mobilePrice = mobilePrice;
+        this->warrantyPeriod = warrantyPeriod;
+        this->storage = storage;
+        this->stock = stock;
+        Globals::latestMobileID = "P11" + to_string(stoi(Globals::latestMobileID.substr(3)) + 1);
+        this->mobileId = Globals::latestMobileID;
+    };
 
-	string getMobileId() const { return this->mobileId; }
-	void setMobileId(string mobileId) { this->mobileId = mobileId; }
-	string getMobileName() const { return this->mobileName; }
-	void setMobileName(string mobileName) { this->mobileName = mobileName; }
-	string getModel() const { return this->model; }
-	void setModel(string model) { this->model = model; }
-	double getMobilePrice() const { return this->mobilePrice; }
-	void setMobilePrice(double mobilePrice) { this->mobilePrice = mobilePrice; }
-	int getWarrantyPeriod() const { return this->warrantyPeriod; }
-	void setWarrantyPeriod(int warrantyPeriod) { this->warrantyPeriod = warrantyPeriod; }
-	int getStorage() const { return this->storage; }
-	void setStorage(int storage) { this->storage = storage; }
-	int getStock() const { return this->stock; }
-	void setStock(int stock) { this->stock = stock; }
+    bool getAvailability() { return this->isAvailable; }
+    string getMobileId() { return this->mobileId; } 
+    // string getMobileName() { return this->mobileName; }
+    // string getModel() { return this->model; }
+    double getMobilePrice() { return this->mobilePrice; }
+    // int getWarrantyPeriod() { return this->warrantyPeriod; }
+    // int getStorage() { return this->storage; }
+    int getStock() { return this->stock; } 
+    void setAvailability(bool availability) { this->isAvailable = availability; }
+    void setStock(int stock) { this->stock = stock; }
+    void update(string mobileName, string model, double mobilePrice, int warrantyPeriod, int storage, int stock)
+    {
+        this->mobileName = mobileName;
+        this->model = model;
+        this->mobilePrice = mobilePrice;
+        this->warrantyPeriod = warrantyPeriod;
+        this->storage = storage;
+        this->stock = stock;
+    }
 
-	
-	bool operator==(const Mobile& other) const {
-		return this->mobileId == other.mobileId;
-	}
+    string save() {
+        return mobileId + "\t" + mobileName + "\t" + model + "\t" + to_string(mobilePrice) + "\t" + to_string(warrantyPeriod)
+            + "\t" + to_string(storage) + "\t" + to_string(stock) + "\t" + (isAvailable ? "1" : "0") + "\n";
+    }
 
-	//el bombaa
-	string save() const {
-		return mobileId + "|" + mobileName + "|" + model + "|" +
-			to_string(mobilePrice) + "|" + to_string(warrantyPeriod) + "|" +
-			to_string(storage) + "|" + to_string(stock) + "\n";
-	}//database yetsaraf
-	
-	static Mobile load(const string& line) {
-		Mobile m;
-		stringstream ss(line);
-		string price, warranty, storage, stock;
+    static Mobile load(const string &line) {
+        vector<string> f = Globals::split(line);
+        Mobile m(f.at(1), f.at(2), stod(f.at(3)), stoi(f.at(4)), stoi(f.at(5)), stoi(f.at(6)));
+        m.mobileId = f.at(0);
+        m.isAvailable = (f.at(7) == "1");
+        return m;
+    }
 
-		getline(ss, m.mobileId, '|');
-		getline(ss, m.mobileName, '|');
-		getline(ss, m.model, '|');
+    void display(bool showZeroStock = false) {
+        if (!isAvailable) return;
+        if (showZeroStock || stock > 0) {
+            cout << "│ " << left << setw(9) << mobileId << " │ " << setw(22) << mobileName << " │ " << setw(12) << model
+                << " │ $" << setw(9) << fixed << setprecision(2) << mobilePrice << " │ " << setw(9) << warrantyPeriod
+                << " │ " << setw(9) << storage << " │ " << setw(9) << stock << " │" << endl;
+        }
+    };
 
-		getline(ss, price, '|');
-		getline(ss, warranty, '|');
-		getline(ss, storage, '|');
-		getline(ss, stock, '|');
+    void displayHeader() {
+        cout << "┌───────────┬────────────────────────┬──────────────┬────────────┬───────────┬───────────┬───────────┐" << endl;
+        cout << "│ Mobile ID │ Mobile Name            │ Model        │ Price      │ Warranty  │ Storage   │ Stock     │" << endl;
+        cout << "├───────────┼────────────────────────┼──────────────┼────────────┼───────────┼───────────┼───────────┤" << endl;
+    };
 
-		//changing string to data types needed to make phone object
-
-		m.mobilePrice = stod(price);
-		m.warrantyPeriod = stoi(warranty);
-		m.storage = stoi(storage);
-		m.stock = stoi(stock);
-
-		return m;
-	}
+    void displayFooter() {
+        cout << "└───────────┴────────────────────────┴──────────────┴────────────┴───────────┴───────────┴───────────┘" << endl;
+    };
 };
